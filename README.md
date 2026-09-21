@@ -44,77 +44,113 @@ A phishing page (hosted on Kali) delivered a PowerShell payload to a Windows end
 
 Detection rate went from **0% to 100%** once the relevant rules were live. Mean time to detect (MTTD) across the post-ZT runs was **~11m 16s**, increasing slightly run to run — a reminder that "detected" and "detected fast" aren't the same thing.
 
-<table>
-<tr>
-<td><img src="evidence/lab1-detection-rules-disabled.png" alt="Sentinel analytics rules disabled pre-ZT"></td>
-<td><img src="evidence/lab1-phishing-page-motw.png" alt="Phishing page and Windows Mark of the Web warning"></td>
-</tr>
-<tr>
-<td><img src="evidence/lab1-powershell-execution.png" alt="PowerShell execution on the Windows endpoint"></td>
-<td><img src="evidence/lab1-sentinel-alerts.png" alt="Sentinel alerts generated post-ZT"></td>
-</tr>
-</table>
+<details>
+<summary>📷 Evidence — Lab 1</summary>
+
+![Sentinel analytics rules disabled pre-ZT](evidence/lab1-detection-rules-disabled.png)
+*Sentinel analytics rules disabled pre-ZT*
+
+![Phishing page and Windows Mark of the Web warning](evidence/lab1-phishing-page-motw.png)
+*Phishing page and Windows Mark of the Web warning*
+
+![PowerShell execution on the Windows endpoint](evidence/lab1-powershell-execution.png)
+*PowerShell execution on the Windows endpoint*
+
+![Sentinel alerts generated post-ZT](evidence/lab1-sentinel-alerts.png)
+*Sentinel alerts generated post-ZT*
+
+</details>
 
 ## Lab 2 — Password Spray & Credential Compromise
 
 **Part A — reaching the Domain Controller.** Pre-ZT, pfSense allowed Kali to reach the DC directly. An Nmap scan enumerated LDAP and SMB as open; a NetExec password spray against LDAP (decoy accounts + one seeded weak-but-compliant password) produced a successful authentication after multiple failures. Post-ZT, a pfSense rule denied all Kali→DC traffic — the same Nmap scan reported the ports as *filtered*, the password spray couldn't establish a connection at all (confirmed via a Wireshark capture showing dropped SYNs, no SYN-ACK/RST), and no new authentication events reached Sentinel.
 
-<table>
-<tr>
-<td><img src="evidence/lab2-nmap-prezt.png" alt="Nmap scan pre-ZT showing open ports on the DC"></td>
-<td><img src="evidence/lab2-password-spray-success.png" alt="Successful password spray result"></td>
-</tr>
-<tr>
-<td><img src="evidence/lab2-nmap-postzt-filtered.png" alt="Nmap scan post-ZT showing ports filtered"></td>
-<td><img src="evidence/lab2-netexec-blocked.png" alt="NetExec unable to connect after pfSense rule change"></td>
-</tr>
-<tr>
-<td><img src="evidence/lab2-wireshark-dropped-syn.png" alt="Wireshark capture showing dropped SYN packets"></td>
-<td><img src="evidence/lab2-sentinel-no-new-events.png" alt="Sentinel showing no new authentication events from Kali"></td>
-</tr>
-</table>
+<details>
+<summary>📷 Evidence — Lab 2, Part A (network)</summary>
+
+![Nmap scan pre-ZT showing open ports on the DC](evidence/lab2-nmap-prezt.png)
+*Nmap scan pre-ZT showing open ports on the DC*
+
+![Successful password spray result](evidence/lab2-password-spray-success.png)
+*Successful password spray result*
+
+![Nmap scan post-ZT showing ports filtered](evidence/lab2-nmap-postzt-filtered.png)
+*Nmap scan post-ZT showing ports filtered*
+
+![NetExec unable to connect after pfSense rule change](evidence/lab2-netexec-blocked.png)
+*NetExec unable to connect after pfSense rule change*
+
+![Wireshark capture showing dropped SYN packets](evidence/lab2-wireshark-dropped-syn.png)
+*Wireshark capture showing dropped SYN packets*
+
+![Sentinel showing no new authentication events from Kali](evidence/lab2-sentinel-no-new-events.png)
+*Sentinel showing no new authentication events from Kali*
+
+</details>
 
 **Part B — reusing the compromised credential against the cloud.** Network segmentation alone didn't help here: Entra ID authentication happens independently of the on-prem network, so the compromised `jgreen` credentials signed in to Microsoft 365 from Kali regardless of the pfSense rule. Only after Conditional Access policies were applied (MFA + device compliance required) was that sign-in blocked — confirmed in the Entra sign-in logs. The same identity, from the Intune-managed compliant device, was allowed straight through. **Same credentials, different outcome — the control was evaluating context, not just the account.**
 
-<table>
-<tr>
-<td><img src="evidence/lab2-m365-signin-kali.png" alt="Sign-in to Microsoft 365 from Kali using compromised credentials"></td>
-<td><img src="evidence/lab2-mfa-prompt.png" alt="MFA prompt following Conditional Access policy"></td>
-</tr>
-<tr>
-<td><img src="evidence/lab2-entra-ca-block.png" alt="Entra sign-in logs showing Conditional Access blocking the sign-in"></td>
-<td><img src="evidence/lab2-entra-signin-compliant-device.png" alt="Successful sign-in from the Intune-managed compliant device"></td>
-</tr>
-</table>
+<details>
+<summary>📷 Evidence — Lab 2, Part B (identity)</summary>
+
+![Sign-in to Microsoft 365 from Kali using compromised credentials](evidence/lab2-m365-signin-kali.png)
+*Sign-in to Microsoft 365 from Kali using compromised credentials*
+
+![MFA prompt following Conditional Access policy](evidence/lab2-mfa-prompt.png)
+*MFA prompt following Conditional Access policy*
+
+![Entra sign-in logs showing Conditional Access blocking the sign-in](evidence/lab2-entra-ca-block.png)
+*Entra sign-in logs showing Conditional Access blocking the sign-in*
+
+![Successful sign-in from the Intune-managed compliant device](evidence/lab2-entra-signin-compliant-device.png)
+*Successful sign-in from the Intune-managed compliant device*
+
+</details>
 
 ## Lab 3 — SMB Misconfiguration & Honeytoken Detection
 
 **Part A — least privilege.** `jgreen` was (mis)configured with access to a Corporate share as well as the intended Employee share — a realistic over-permissioning error. Pre-fix, files were accessed and copied from the Corporate share (simulated exfiltration). Removing the unnecessary group membership restricted the account to the Employee share only, on the same identity, same credentials.
 
-<table>
-<tr>
-<td><img src="evidence/lab3-smb-access-corporate.png" alt="Corporate SMB share accessed and files copied pre-ZT"></td>
-<td><img src="evidence/lab3-event5145-eventviewer.png" alt="Event ID 5145 in Windows Event Viewer"></td>
-</tr>
-<tr>
-<td><img src="evidence/lab3-event5145-sentinel.png" alt="Event ID 5145 visible in Sentinel"></td>
-<td><img src="evidence/lab3-smb-access-restricted.png" alt="SMB access restricted to Employee share post-ZT"></td>
-</tr>
-</table>
+<details>
+<summary>📷 Evidence — Lab 3, Part A (least privilege)</summary>
+
+![Corporate SMB share accessed and files copied pre-ZT](evidence/lab3-smb-access-corporate.png)
+*Corporate SMB share accessed and files copied pre-ZT*
+
+![Event ID 5145 in Windows Event Viewer](evidence/lab3-event5145-eventviewer.png)
+*Event ID 5145 in Windows Event Viewer*
+
+![Event ID 5145 visible in Sentinel](evidence/lab3-event5145-sentinel.png)
+*Event ID 5145 visible in Sentinel*
+
+![SMB access restricted to Employee share post-ZT](evidence/lab3-smb-access-restricted.png)
+*SMB access restricted to Employee share post-ZT*
+
+</details>
 
 **Part B — honeytoken detection.** An "Executive Salaries" folder was planted as a monitored decoy with object-access auditing enabled (Event ID 4663), feeding a Sentinel analytics rule.
 
+| Run | Time to incident (MTTD) | Alerts generated |
+|---|---|---|
+| 1 | 8m 42s | 10 |
+| 2 | 18m 19s | 5 |
+| 3 | 8m 25s | 6 |
+
 Detection time varied noticeably between otherwise-identical runs — a useful, honest finding about SIEM pipeline variability rather than instant detection. An automation rule auto-triaged each incident to "In Progress."
 
-<table>
-<tr>
-<td><img src="evidence/lab3-honeytoken-access.png" alt="Honeytoken folder accessed"></td>
-<td><img src="evidence/lab3-honeytoken-incidents.png" alt="Honeytoken incidents raised in Sentinel"></td>
-</tr>
-<tr>
-<td colspan="2"><img src="evidence/lab3-honeytoken-rule-setup.png" alt="Sentinel analytics rule configuration for the honeytoken"></td>
-</tr>
-</table>
+<details>
+<summary>📷 Evidence — Lab 3, Part B (honeytoken)</summary>
+
+![Honeytoken folder accessed](evidence/lab3-honeytoken-access.png)
+*Honeytoken folder accessed*
+
+![Honeytoken incidents raised in Sentinel](evidence/lab3-honeytoken-incidents.png)
+*Honeytoken incidents raised in Sentinel*
+
+![Sentinel analytics rule configuration for the honeytoken](evidence/lab3-honeytoken-rule-setup.png)
+*Sentinel analytics rule configuration for the honeytoken*
+
+</details>
 
 ---
 
