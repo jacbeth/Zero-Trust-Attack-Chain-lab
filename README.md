@@ -14,16 +14,21 @@ Traditional security models trust based on network location — being "inside" t
 
 A hybrid lab built in VirtualBox, segmented with pfSense:
 
+**Network segments**
+
 | Segment | Range | Purpose |
 |---|---|---|
 | Corporate LAN | 192.168.10.0/24 | Windows Server (AD Domain Controller), Windows endpoints, one Intune-managed device |
 | Attacker LAN (untrusted) | 192.168.20.0/24 | Kali Linux |
-| Logger LAN | 192.168.30.0/24 | Syslog forwarder |
-**Identity & endpoint:** Microsoft Entra ID, Conditional Access, Intune, Defender
-**Detection:** Microsoft Sentinel, Log Analytics Workspace, Data Collection Rules, Azure Monitor Agent, Azure Arc, KQL
-**Offensive tooling:** Kali Linux, Nmap, NetExec, Wireshark
+| Logger LAN | 192.168.30.0/24 | Syslog forwarder (removed mid-project after VM instability) |
 
-![Lab architecture diagram showing Corporate, Attacker and Logger network segments](evidence/architecture-diagram.png)
+**Tooling**
+
+- **Identity & endpoint:** Microsoft Entra ID, Conditional Access, Intune, Defender
+- **Detection:** Microsoft Sentinel, Log Analytics Workspace, Data Collection Rules, Azure Monitor Agent, Azure Arc, KQL
+- **Offensive tooling:** Kali Linux, Nmap, NetExec, Wireshark
+
+![Lab architecture diagram showing Corporate, Attacker and Logger network segments](evidence/project-architecture.png)
 
 ## Method
 
