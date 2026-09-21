@@ -48,7 +48,7 @@ Detection rate went from **0% to 100%** once the relevant rules were live. Mean 
 <summary>📷 Evidence — Lab 1</summary>
 
 ![Sentinel analytics rules disabled pre-ZT](evidence/lab1-detection-rules-disabled.png)
-*Sentinel analytics rules disabled pre-ZT*
+*Sentinel analytics rules disabled pre-ZT run*
 
 ![Phishing page and Windows Mark of the Web warning](evidence/lab1-phishing-page-motw.png)
 *Phishing page and Windows Mark of the Web warning*
@@ -57,7 +57,7 @@ Detection rate went from **0% to 100%** once the relevant rules were live. Mean 
 *PowerShell execution on the Windows endpoint*
 
 ![Sentinel alerts generated post-ZT](evidence/sentinel-alerts.png)
-*Sentinel alerts generated post-ZT*
+*Sentinel alerts generated post-ZT implementation*
 
 </details>
 
@@ -69,7 +69,7 @@ Detection rate went from **0% to 100%** once the relevant rules were live. Mean 
 <summary>📷 Evidence — Lab 2, Part A (network)</summary>
 
 ![Nmap scan pre-ZT showing open ports on the DC](evidence/nmap-prezt.png)
-*Nmap scan pre-ZT showing open ports on the DC*
+*Nmap scan pre-ZT controls showing open ports on the DC*
 
 ![Successful password spray result](evidence/password-spray-success.png)
 *Successful password spray result*
@@ -93,7 +93,7 @@ Detection rate went from **0% to 100%** once the relevant rules were live. Mean 
 <details>
 <summary>📷 Evidence — Lab 2, Part B (identity)</summary>
 
-![Sign-in to Microsoft 365 from Kali using compromised credentials](evidence/m365-signin-kali.png)
+![Sign-in to Microsoft 365 from Kali using compromised credentials](evidence/ms365-signin-kali.png)
 *Sign-in to Microsoft 365 from Kali using compromised credentials*
 
 ![MFA prompt following Conditional Access policy](evidence/mfa-prompt.png)
@@ -102,7 +102,7 @@ Detection rate went from **0% to 100%** once the relevant rules were live. Mean 
 ![Entra sign-in logs showing Conditional Access blocking the sign-in](evidence/entra-ca-block.png)
 *Entra sign-in logs showing Conditional Access blocking the sign-in*
 
-![Successful sign-in from the Intune-managed compliant device](evidence/entra-signin-compliant-device.png)
+![Successful sign-in from the Intune-managed compliant device](evidence/entra-sign-compliant-device.png)
 *Successful sign-in from the Intune-managed compliant device*
 
 </details>
