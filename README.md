@@ -53,10 +53,10 @@ Detection rate went from **0% to 100%** once the relevant rules were live. Mean 
 ![Phishing page and Windows Mark of the Web warning](evidence/lab1-phishing-page-motw.png)
 *Phishing page and Windows Mark of the Web warning*
 
-![PowerShell execution on the Windows endpoint](evidence/lab1-powershell-execution.png)
+![PowerShell execution on the Windows endpoint](evidence/powershell-execution.png)
 *PowerShell execution on the Windows endpoint*
 
-![Sentinel alerts generated post-ZT](evidence/lab1-sentinel-alerts.png)
+![Sentinel alerts generated post-ZT](evidence/sentinel-alerts.png)
 *Sentinel alerts generated post-ZT*
 
 </details>
@@ -68,22 +68,22 @@ Detection rate went from **0% to 100%** once the relevant rules were live. Mean 
 <details>
 <summary>📷 Evidence — Lab 2, Part A (network)</summary>
 
-![Nmap scan pre-ZT showing open ports on the DC](evidence/lab2-nmap-prezt.png)
+![Nmap scan pre-ZT showing open ports on the DC](evidence/nmap-prezt.png)
 *Nmap scan pre-ZT showing open ports on the DC*
 
-![Successful password spray result](evidence/lab2-password-spray-success.png)
+![Successful password spray result](evidence/password-spray-success.png)
 *Successful password spray result*
 
-![Nmap scan post-ZT showing ports filtered](evidence/lab2-nmap-postzt-filtered.png)
+![Nmap scan post-ZT showing ports filtered](evidence/nmap-postzt-filtered.png)
 *Nmap scan post-ZT showing ports filtered*
 
-![NetExec unable to connect after pfSense rule change](evidence/lab2-netexec-blocked.png)
+![NetExec unable to connect after pfSense rule change](evidence/netexec-blocked.png)
 *NetExec unable to connect after pfSense rule change*
 
-![Wireshark capture showing dropped SYN packets](evidence/lab2-wireshark-dropped-syn.png)
+![Wireshark capture showing dropped SYN packets](evidence/wireshark-dropped-syn.png)
 *Wireshark capture showing dropped SYN packets*
 
-![Sentinel showing no new authentication events from Kali](evidence/lab2-sentinel-no-new-events.png)
+![Sentinel showing no new authentication events from Kali](evidence/sentinel-no-new-events.png)
 *Sentinel showing no new authentication events from Kali*
 
 </details>
@@ -93,16 +93,16 @@ Detection rate went from **0% to 100%** once the relevant rules were live. Mean 
 <details>
 <summary>📷 Evidence — Lab 2, Part B (identity)</summary>
 
-![Sign-in to Microsoft 365 from Kali using compromised credentials](evidence/lab2-m365-signin-kali.png)
+![Sign-in to Microsoft 365 from Kali using compromised credentials](evidence/m365-signin-kali.png)
 *Sign-in to Microsoft 365 from Kali using compromised credentials*
 
-![MFA prompt following Conditional Access policy](evidence/lab2-mfa-prompt.png)
+![MFA prompt following Conditional Access policy](evidence/mfa-prompt.png)
 *MFA prompt following Conditional Access policy*
 
-![Entra sign-in logs showing Conditional Access blocking the sign-in](evidence/lab2-entra-ca-block.png)
+![Entra sign-in logs showing Conditional Access blocking the sign-in](evidence/entra-ca-block.png)
 *Entra sign-in logs showing Conditional Access blocking the sign-in*
 
-![Successful sign-in from the Intune-managed compliant device](evidence/lab2-entra-signin-compliant-device.png)
+![Successful sign-in from the Intune-managed compliant device](evidence/entra-signin-compliant-device.png)
 *Successful sign-in from the Intune-managed compliant device*
 
 </details>
@@ -114,41 +114,32 @@ Detection rate went from **0% to 100%** once the relevant rules were live. Mean 
 <details>
 <summary>📷 Evidence — Lab 3, Part A (least privilege)</summary>
 
-![Corporate SMB share accessed and files copied pre-ZT](evidence/lab3-smb-access-corporate.png)
+![Corporate SMB share accessed and files copied pre-ZT](evidence/smb-access-corporate.png)
 *Corporate SMB share accessed and files copied pre-ZT*
 
-![Event ID 5145 in Windows Event Viewer](evidence/lab3-event5145-eventviewer.png)
+![Event ID 5145 in Windows Event Viewer](evidence/event5145-eventviewer.png)
 *Event ID 5145 in Windows Event Viewer*
 
-![Event ID 5145 visible in Sentinel](evidence/lab3-event5145-sentinel.png)
+![Event ID 5145 visible in Sentinel](evidence/event5145-sentinel.png)
 *Event ID 5145 visible in Sentinel*
 
-![SMB access restricted to Employee share post-ZT](evidence/lab3-smb-access-restricted.png)
+![SMB access restricted to Employee share post-ZT](evidence/smb-access-restricted.png)
 *SMB access restricted to Employee share post-ZT*
 
 </details>
 
 **Part B — honeytoken detection.** An "Executive Salaries" folder was planted as a monitored decoy with object-access auditing enabled (Event ID 4663), feeding a Sentinel analytics rule.
 
-| Run | Time to incident (MTTD) | Alerts generated |
-|---|---|---|
-| 1 | 8m 42s | 10 |
-| 2 | 18m 19s | 5 |
-| 3 | 8m 25s | 6 |
-
 Detection time varied noticeably between otherwise-identical runs — a useful, honest finding about SIEM pipeline variability rather than instant detection. An automation rule auto-triaged each incident to "In Progress."
 
 <details>
 <summary>📷 Evidence — Lab 3, Part B (honeytoken)</summary>
 
-![Honeytoken folder accessed](evidence/lab3-honeytoken-access.png)
+![Honeytoken folder accessed](evidence/honeytoken-access.png)
 *Honeytoken folder accessed*
 
-![Honeytoken incidents raised in Sentinel](evidence/lab3-honeytoken-incidents.png)
+![Honeytoken incidents raised in Sentinel](evidence/honeytoken-incidents.png)
 *Honeytoken incidents raised in Sentinel*
-
-![Sentinel analytics rule configuration for the honeytoken](evidence/lab3-honeytoken-rule-setup.png)
-*Sentinel analytics rule configuration for the honeytoken*
 
 </details>
 
@@ -165,7 +156,7 @@ Detection time varied noticeably between otherwise-identical runs — a useful, 
 | 5 | Compromised creds → M365 sign-in | T1078.004 Valid Accounts: Cloud Accounts | Identity (none, pre-ZT) | 2 |
 | 6 | Conditional Access blocks sign-in | *(defensive control)* | Identity (MFA, device compliance) | 2 |
 | 7 | SMB share accessed with excess permissions | T1135 Network Share Discovery | Data (least privilege) | 3 |
-| 8 | File exfiltration via SMB | T1039 / T1048 | Data (least privilege) | 3 |
+| 8 | File exfiltration via SMB | T1039 Data from Network Shared Drive; T1048 Exfiltration Over Alternative Protocol | Data (least privilege) | 3 |
 | 9 | Honeytoken file accessed | T1005 Data from Local System | Visibility (deception) | 3 |
 | 10 | Sentinel automated response | *(defensive action)* | Visibility, Automation & Orchestration | 3 |
 
