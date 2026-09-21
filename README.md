@@ -20,7 +20,7 @@ A hybrid lab built in VirtualBox, segmented with pfSense:
 |---|---|---|
 | Corporate LAN | 192.168.10.0/24 | Windows Server (AD Domain Controller), Windows endpoints, one Intune-managed device |
 | Attacker LAN (untrusted) | 192.168.20.0/24 | Kali Linux |
-| Logger LAN | 192.168.30.0/24 | Syslog forwarder (removed mid-project after VM instability) |
+| Logger LAN | 192.168.30.0/24 | Syslog forwarder
 
 **Tooling**
 
